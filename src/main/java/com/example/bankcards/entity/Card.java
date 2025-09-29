@@ -46,8 +46,8 @@ public class Card {
 
     @NotNull
     @ManyToOne
-    @JoinColumn(name = "owner", referencedColumnName = "id_user")
-    private User owner;
+    @JoinColumn(name = "user_id", referencedColumnName = "id_user")
+    private User userId;
 
     public Card() {
     }

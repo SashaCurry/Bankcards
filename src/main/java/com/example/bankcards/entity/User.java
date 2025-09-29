@@ -43,7 +43,7 @@ public class User {
     @NotNull
     private String roles;
 
-    @OneToMany(mappedBy = "owner")
+    @OneToMany(mappedBy = "userId")
     private List<Card> cards;
 
     public User() {

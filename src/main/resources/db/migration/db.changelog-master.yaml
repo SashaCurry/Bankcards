@@ -3,3 +3,5 @@ databaseChangeLog:
       file: db/migration/changesets/1-create-users-table.sql
   - include:
       file: db/migration/changesets/2-create-cards-table.sql
+  - include:
+      file: db/migration/changesets/3-add-admin-user.sql
