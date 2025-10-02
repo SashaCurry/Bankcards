@@ -12,7 +12,7 @@ import lombok.Setter;
 import java.time.Year;
 
 @Entity
-@Table(name = "Cards")
+@Table(name = "cards")
 @AllArgsConstructor
 @Getter
 @Setter
