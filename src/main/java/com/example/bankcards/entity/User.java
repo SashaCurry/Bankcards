@@ -3,33 +3,24 @@ package com.example.bankcards.entity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
-@Table(name = "Users")
+@Table(name = "users")
 @AllArgsConstructor
-@Getter
-@Setter
+@Data
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_user")
-    private int id;
+    private Integer id;
 
-    @Column(name = "firstname")
+    @Column(name = "name")
     @NotNull
-    private String firstname;
-
-    @Column(name = "midname")
-    @NotNull
-    private String midname;
-
-    @Column(name = "lastname")
-    @NotNull
-    private String lastname;
+    private String name;
 
     @Column(name = "login")
     @NotNull
@@ -45,6 +36,12 @@ public class User {
 
     @OneToMany(mappedBy = "userId")
     private List<Card> cards;
+
+    @Column(name = "created_at", updatable = false)
+    private LocalDateTime createdAt;
+
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
 
     public User() {
     }

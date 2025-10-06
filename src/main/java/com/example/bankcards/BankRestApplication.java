@@ -2,13 +2,11 @@ package com.example.bankcards;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
 
-@SpringBootApplication(exclude = {SecurityAutoConfiguration.class} )
+@SpringBootApplication
 class BankRestApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(BankRestApplication.class, args);
     }
-
 }
