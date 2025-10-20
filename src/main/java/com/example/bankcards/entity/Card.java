@@ -20,11 +20,11 @@ public class Card {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_card")
-    private int id;
+    private Integer id;
 
     @Column(name = "number")
     @NotNull
-    private int number;
+    private String number;
 
     @Column(name = "exp_month")
     @NotNull
