@@ -1,5 +1,8 @@
 package com.example.bankcards.dto;
 
+import jakarta.validation.constraints.FutureOrPresent;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 
 import java.time.Year;
@@ -11,12 +14,15 @@ public class CardDTO {
     private String number;
 
     @NotNull
-    private Integer user_id;
+    private Integer userId;
 
     @NotNull
+    @Min(value = 1)
+    @Max(value = 12)
     private Byte expMonth;
 
     @NotNull
+    @FutureOrPresent
     private Year expYear;
 
     @NotNull

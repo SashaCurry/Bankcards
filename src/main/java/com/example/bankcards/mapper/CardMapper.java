@@ -10,10 +10,12 @@ import java.util.List;
 
 @Mapper(unmappedTargetPolicy = ReportingPolicy.ERROR, componentModel = "spring")
 public interface CardMapper {
-    @Mapping(target = "id", ignore = true)
-    Card cardDTOToCard(CardDTO cardDTO);
-
-    CardDTO cardToCardDTO(Card card);
-
-    List<CardDTO> cardListToCardDTOList(List<Card> cards);
+//    @Mapping(target = "id", ignore = true)
+//    @Mapping(target = "userId", ignore = true)
+//    Card cardDTOToCard(CardDTO cardDTO);
+//
+//    @Mapping(target = "userId", source = "userId.id")
+//    CardDTO cardToCardDTO(Card card);
+//
+//    List<CardDTO> cardListToCardDTOList(List<Card> cards);
 }
