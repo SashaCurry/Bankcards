@@ -5,3 +5,7 @@ databaseChangeLog:
       file: db/migration/changesets/2-create-cards-table.sql
   - include:
       file: db/migration/changesets/3-create-admin-user.sql
+  - include:
+      file: db/migration/changesets/4-update-number-type-in-cards.sql
+  - include:
+      file: db/migration/changesets/5-create-sequence-for-card-number.sql

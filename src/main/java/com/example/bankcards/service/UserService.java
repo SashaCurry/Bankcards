@@ -1,7 +1,10 @@
 package com.example.bankcards.service;
 
+import com.example.bankcards.dto.UserDTO;
 import com.example.bankcards.entity.User;
+import com.example.bankcards.exception.UserNotCreatedException;
 import com.example.bankcards.exception.UserNotFoundException;
+import com.example.bankcards.mapper.UserMapper;
 import com.example.bankcards.repository.CardRepository;
 import com.example.bankcards.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -17,8 +20,8 @@ import java.util.List;
 @RequiredArgsConstructor
 public class UserService {
     private final UserRepository userRepository;
-    private final CardRepository cardRepository;
     private final PasswordEncoder passwordEncoder;
+    private final UserMapper userMapper;
 
 
     @Transactional
@@ -30,26 +33,29 @@ public class UserService {
         }
     }
 
-    public List<User> findAll() {
-        return userRepository.findAll();
+    public List<UserDTO> findAll() {
+        return userMapper.userListToUserDTOList(userRepository.findAll());
     }
 
 
-    public List<User> findAllByName(String name) {
+    public List<UserDTO> findAllByName(String name) {
         String[] nameParts = name.split(" ");
 
-        return switch (nameParts.length) {
-            case 1 -> userRepository.findAllByName(nameParts[0], "", "");
-            case 2 -> userRepository.findAllByName(nameParts[0], nameParts[1], "");
-            case 3 -> userRepository.findAllByName(nameParts[0], nameParts[1], nameParts[2]);
-            default -> userRepository.findAll();
+        List<User> userList;
+        switch (nameParts.length) {
+            case 1 -> userList = userRepository.findAllByName(nameParts[0], "", "");
+            case 2 -> userList = userRepository.findAllByName(nameParts[0], nameParts[1], "");
+            case 3 -> userList = userRepository.findAllByName(nameParts[0], nameParts[1], nameParts[2]);
+            default -> userList = userRepository.findAll();
         };
+
+        return userMapper.userListToUserDTOList(userList);
     }
 
 
-    public User findOne(int id) {
+    public UserDTO findOne(int id) {
         if (userRepository.findById(id).isPresent()) {
-            return userRepository.findById(id).get();
+            return userMapper.userToUserDTO(userRepository.findById(id).get());
         } else {
             throw new UserNotFoundException("Пользователь с id = " + id + " не найден!");
         }
@@ -57,7 +63,13 @@ public class UserService {
 
 
     @Transactional
-    public void saveUser(User user) {
+    public void saveUser(UserDTO userDTO) {
+        User user = userMapper.userDTOToUser(userDTO);
+
+        if (userIsExists(user.getLogin())) {
+            throw new UserNotCreatedException("Пользователь с логином " + user.getLogin() + " уже существует!");
+        }
+
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setCreatedAt(LocalDateTime.now());
         user.setUpdatedAt(LocalDateTime.now());
@@ -66,32 +78,28 @@ public class UserService {
 
 
     @Transactional
-    public void updateUser(User user) {
-        if (userRepository.findById(user.getId()).isPresent()) {
-            User newUser = userRepository.findById(user.getId()).get();
+    public void updateUser(UserDTO userDTO) {
+        if (userRepository.findById(userDTO.getId()).isPresent()) {
+            User newUser = userRepository.findById(userDTO.getId()).get();
 
-            if (user.getName() != null) {
-                newUser.setName(user.getName());
+            if (!userDTO.getLogin().equals(newUser.getLogin()) && userIsExists(userDTO.getLogin())) {
+                throw new UserNotCreatedException("Пользователь с логином = " + userDTO.getLogin() + " уже существует");
             }
-            if (user.getLogin() != null) {
-                newUser.setLogin(user.getLogin());
-            }
-            if (user.getPassword() != null) {
-                newUser.setPassword(passwordEncoder.encode(user.getPassword()));
-            }
-            if (user.getRoles() != null) {
-                newUser.setRoles(user.getRoles());
-            }
+
+            newUser.setName(userDTO.getName());
+            newUser.setLogin(userDTO.getLogin());
+            newUser.setPassword(passwordEncoder.encode(userDTO.getPassword()));
+            newUser.setRoles(userDTO.getRoles());
             newUser.setUpdatedAt(LocalDateTime.now());
 
             userRepository.save(newUser);
         } else {
-            throw new UserNotFoundException("Пользователь с id = " + user.getId() + " не найден!");
+            throw new UserNotFoundException("Пользователь с id = " + userDTO.getId() + " не найден!");
         }
     }
 
 
-    public boolean userIsExists(User user) {
-        return userRepository.existsByLogin(user.getLogin());
+    public boolean userIsExists(String login) {
+        return userRepository.existsByLogin(login);
     }
 }

@@ -1,10 +1,7 @@
 package com.example.bankcards.entity;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.FutureOrPresent;
-import jakarta.validation.constraints.Max;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -20,31 +17,33 @@ public class Card {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_card")
-    private int id;
+    private Integer id;
 
     @Column(name = "number")
-    @NotNull
-    private int number;
+    @NotNull(message = "Номер карты number не может быть пустым")
+    @NotBlank(message = "Номер карты number не может состоять только из пробелов")
+    private String number;
 
     @Column(name = "exp_month")
-    @NotNull
-    @Min(value = 1)
-    @Max(value = 12)
+    @NotNull(message = "Параметр expMonth (месяц истечения срока годности) не может быть пустым")
+    @Min(value = 1, message = "Минимальное значение месяца: 1 (январь)")
+    @Max(value = 12, message = "Максимальное значение месяца: 12 (декабрь)")
     private Byte expMonth;
 
     @Column(name = "exp_year")
-    @NotNull
-    @FutureOrPresent
+    @NotNull(message = "Параметр expYear (год истечения срока годности) не может быть пустым")
+    @FutureOrPresent(message = "Параметр expYear должен быть равен текущему году или будуему")
     private Year expYear;
 
     @Column(name = "status")
-    @NotNull
+    @NotNull(message = "Статус карты (Активна, Заблокирована, Истёк срок) не может быть пустым")
     private String status;
 
     @Column(name = "balance")
+    @NotNull(message = "Баланс карты balance не может быть пустым")
     private Float balance;
 
-    @NotNull
+    @NotNull(message = "Id пользователя userId не может быть пустым")
     @ManyToOne
     @JoinColumn(name = "user_id", referencedColumnName = "id_user")
     private User userId;
