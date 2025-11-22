@@ -1,7 +1,6 @@
 package com.example.bankcards.controller;
 
 import com.example.bankcards.dto.UserDTO;
-import com.example.bankcards.exception.UserNotFoundException;
 import com.example.bankcards.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -37,13 +36,7 @@ public class UserController {
 
     @GetMapping("/{id}")
     public ResponseEntity<UserDTO> getOneUser(@PathVariable("id") int id) {
-        UserDTO userDTO = userService.findOne(id);
-
-        if (userDTO == null) {
-            throw new UserNotFoundException("Пользователь с id = " + id + " не существует!");
-        }
-
-        return new ResponseEntity<>(userDTO, HttpStatus.OK);
+        return new ResponseEntity<>(userService.findOne(id), HttpStatus.OK);
     }
 
 

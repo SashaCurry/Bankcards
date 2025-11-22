@@ -5,7 +5,6 @@ import com.example.bankcards.entity.User;
 import com.example.bankcards.exception.UserNotCreatedException;
 import com.example.bankcards.exception.UserNotFoundException;
 import com.example.bankcards.mapper.UserMapper;
-import com.example.bankcards.repository.CardRepository;
 import com.example.bankcards.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -29,7 +28,7 @@ public class UserService {
         if (userRepository.findById(id).isPresent()) {
             userRepository.deleteById(id);
         } else {
-            throw new UserNotFoundException("Пользователь с id = " + id + " не найден!");
+            throw new UserNotFoundException(String.valueOf(id));
         }
     }
 
@@ -39,17 +38,7 @@ public class UserService {
 
 
     public List<UserDTO> findAllByName(String name) {
-        String[] nameParts = name.split(" ");
-
-        List<User> userList;
-        switch (nameParts.length) {
-            case 1 -> userList = userRepository.findAllByName(nameParts[0], "", "");
-            case 2 -> userList = userRepository.findAllByName(nameParts[0], nameParts[1], "");
-            case 3 -> userList = userRepository.findAllByName(nameParts[0], nameParts[1], nameParts[2]);
-            default -> userList = userRepository.findAll();
-        };
-
-        return userMapper.userListToUserDTOList(userList);
+        return userMapper.userListToUserDTOList(userRepository.findAllByNameIgnoreCase(name));
     }
 
 
@@ -57,7 +46,7 @@ public class UserService {
         if (userRepository.findById(id).isPresent()) {
             return userMapper.userToUserDTO(userRepository.findById(id).get());
         } else {
-            throw new UserNotFoundException("Пользователь с id = " + id + " не найден!");
+            throw new UserNotFoundException(String.valueOf(id));
         }
     }
 
@@ -67,7 +56,7 @@ public class UserService {
         User user = userMapper.userDTOToUser(userDTO);
 
         if (userIsExists(user.getLogin())) {
-            throw new UserNotCreatedException("Пользователь с логином " + user.getLogin() + " уже существует!");
+            throw new UserNotCreatedException(user.getLogin());
         }
 
         user.setPassword(passwordEncoder.encode(user.getPassword()));
@@ -83,7 +72,7 @@ public class UserService {
             User newUser = userRepository.findById(userDTO.getId()).get();
 
             if (!userDTO.getLogin().equals(newUser.getLogin()) && userIsExists(userDTO.getLogin())) {
-                throw new UserNotCreatedException("Пользователь с логином = " + userDTO.getLogin() + " уже существует");
+                throw new UserNotCreatedException(userDTO.getLogin());
             }
 
             newUser.setName(userDTO.getName());
@@ -94,7 +83,7 @@ public class UserService {
 
             userRepository.save(newUser);
         } else {
-            throw new UserNotFoundException("Пользователь с id = " + userDTO.getId() + " не найден!");
+            throw new UserNotFoundException(String.valueOf(userDTO.getId()));
         }
     }
 

@@ -1,9 +1,8 @@
 package com.example.bankcards.controller;
 
 import com.example.bankcards.exception.*;
-import com.example.bankcards.util.ErrorResponse;
+import com.example.bankcards.exception.ErrorResponse;
 import jakarta.validation.ConstraintViolationException;
-import org.springframework.data.repository.core.support.IncompleteRepositoryCompositionException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -62,15 +61,6 @@ public class GlobalExceptionHandler {
 
     ////////////////////////////////////////////ИСКЛЮЧЕНИЯ ДЛЯ КАРТ/////////////////////////////////////////////////////
 
-
-    @ExceptionHandler(CardNotCreatedException.class)
-    public ResponseEntity<ErrorResponse> handleException(CardNotCreatedException e) {
-        ErrorResponse response = new ErrorResponse(e.getMessage(), System.currentTimeMillis());
-
-        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
-    }
-
-
     @ExceptionHandler(CardNotFoundException.class)
     public ResponseEntity<ErrorResponse> handleException(CardNotFoundException e) {
         ErrorResponse response = new ErrorResponse(e.getMessage(), System.currentTimeMillis());
@@ -79,16 +69,8 @@ public class GlobalExceptionHandler {
     }
 
 
-    @ExceptionHandler(IncorrectStatusExpection.class)
-    public ResponseEntity<ErrorResponse> handleException(IncorrectStatusExpection e) {
-        ErrorResponse response = new ErrorResponse(e.getMessage(), System.currentTimeMillis());
-
-        return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
-    }
-
-
-    @ExceptionHandler(PageNotFoundException.class)
-    public ResponseEntity<ErrorResponse> handleException(PageNotFoundException e) {
+    @ExceptionHandler(IncorrectStatusCardException.class)
+    public ResponseEntity<ErrorResponse> handleException(IncorrectStatusCardException e) {
         ErrorResponse response = new ErrorResponse(e.getMessage(), System.currentTimeMillis());
 
         return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);

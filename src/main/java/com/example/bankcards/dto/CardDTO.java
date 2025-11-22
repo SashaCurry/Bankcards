@@ -21,7 +21,7 @@ public class CardDTO {
     @FutureOrPresent(message = "Параметр expYear должен быть равен текущему году или будущему")
     private Year expYear;
 
-    @NotNull(message = "Статус карты status не может быть пустым (Active, Blocked, Expired)")
+    @NotNull(message = "Статус карты status не может быть пустым (ACTIVE, BLOCKED, EXPIRED)")
     private String status;
 
     @NotNull(message = "Баланс карты balance не может быть пустым")

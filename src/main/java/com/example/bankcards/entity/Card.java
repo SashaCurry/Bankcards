@@ -32,12 +32,13 @@ public class Card {
 
     @Column(name = "exp_year")
     @NotNull(message = "Параметр expYear (год истечения срока годности) не может быть пустым")
-    @FutureOrPresent(message = "Параметр expYear должен быть равен текущему году или будуему")
+    @FutureOrPresent(message = "Параметр expYear должен быть равен текущему году или будущему")
     private Year expYear;
 
     @Column(name = "status")
+    @Enumerated(EnumType.STRING)
     @NotNull(message = "Статус карты (Активна, Заблокирована, Истёк срок) не может быть пустым")
-    private String status;
+    private StatusCard status;
 
     @Column(name = "balance")
     @NotNull(message = "Баланс карты balance не может быть пустым")

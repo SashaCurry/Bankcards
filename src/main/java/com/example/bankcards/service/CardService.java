@@ -2,9 +2,10 @@ package com.example.bankcards.service;
 
 import com.example.bankcards.dto.CardDTO;
 import com.example.bankcards.entity.Card;
+import com.example.bankcards.entity.StatusCard;
 import com.example.bankcards.entity.User;
 import com.example.bankcards.exception.CardNotFoundException;
-import com.example.bankcards.exception.IncorrectStatusExpection;
+import com.example.bankcards.exception.IncorrectStatusCardException;
 import com.example.bankcards.exception.UserNotFoundException;
 import com.example.bankcards.mapper.CardMapper;
 import com.example.bankcards.repository.CardRepository;
@@ -32,8 +33,8 @@ public class CardService {
     @Transactional
     public void createCard(CardDTO cardDTO) {
         String curStatus = cardDTO.getStatus();
-        if (!curStatus.equals("Active") && !curStatus.equals("Blocked") && !curStatus.equals("Expired")) {
-            throw new IncorrectStatusExpection("Некорректный статус карты. Возможны следующие варианты: Active, Blocked, Expired!");
+        if (!curStatus.equals("ACTIVE") && !curStatus.equals("BLOCKED") && !curStatus.equals("EXPIRED")) {
+            throw new IncorrectStatusCardException();
         }
 
         Card card = cardMapper.cardDTOToCard(cardDTO);
@@ -43,8 +44,7 @@ public class CardService {
         card.setExpYear(Year.of(LocalDate.now().getYear() + 5));
 
         User user = userRepository.findById(cardDTO.getUserId())
-                .orElseThrow(() ->
-                        new UserNotFoundException("Пользователь с id = " + cardDTO.getUserId() + " не найден!"));
+                .orElseThrow(() -> new UserNotFoundException(String.valueOf(cardDTO.getUserId())));
         card.setUserId(user);
 
         cardRepository.save(card);
@@ -53,70 +53,46 @@ public class CardService {
 
     @Transactional
     public void deleteCard(int id) {
-        if (cardRepository.findById(id).isPresent()) {
-            cardRepository.deleteById(id);
-        } else {
-            throw new CardNotFoundException("Карта с id = " + id + " не найдена!");
+        if (cardRepository.findById(id).isEmpty()) {
+            throw new CardNotFoundException(String.valueOf(id));
         }
+
+        cardRepository.deleteById(id);
     }
 
-
-    public List<CardDTO> findAll() {
-        return cardMapper.cardListToCardDTOList(cardRepository.findAll(Sort.by("id")));
-    }
 
     public List<CardDTO> findAll(Integer page) {
+        if (page == null) {
+            return cardMapper.cardListToCardDTOList(cardRepository.findAll());
+        }
+
         return cardMapper.cardListToCardDTOList(
-                cardRepository.findAll(PageRequest.of(page, 10, Sort.by("id"))).getContent());
+                cardRepository.findAll(PageRequest.of(--page, 10, Sort.by("id"))).getContent());
     }
 
 
-//    public List<CardDTO> findAllByNumber(String number) {
-//        String[] numberParts = number.split(" ");
-//
-//        List<Card> cardList;
-//        switch (numberParts.length) {
-//            case 1 -> cardList = cardRepository.findAllByNumber(numberParts[0], "", "");
-//            case 2 -> cardList = cardRepository.findAllByNumber(numberParts[0], numberParts[1], "");
-//            case 3 -> cardList = cardRepository.findAllByNumber(numberParts[0], numberParts[1], numberParts[2]);
-//            default -> cardList = cardRepository.findAll();
-//        };
-//
-//        return cardMapper.cardListToCardDTOList(cardList);
-//    }
+    public List<CardDTO> findAllByUser(Integer idUser, Integer page) {
+        if (userRepository.findById(idUser).isEmpty()) {
+            throw new UserNotFoundException(String.valueOf(idUser));
+        }
 
-
-    public List<CardDTO> findAllByUser(Integer userId) {
-        if (userRepository.findById(userId).isPresent()) {
-            User user = userRepository.findById(userId).get();
+        User user = userRepository.findById(idUser).get();
+        if (page == null) {
             return cardMapper.cardListToCardDTOList(cardRepository.findAllByUserId(user));
         } else {
-            throw new UserNotFoundException("Пользователь с id = " + userId + " не найден!");
-        }
-    }
-
-    public List<CardDTO> findAllByUser(Integer userId, Integer page) {
-        if (userRepository.findById(userId).isPresent()) {
-            User user = userRepository.findById(userId).get();
-            if (page == null) {
-                return cardMapper.cardListToCardDTOList(cardRepository.findAllByUserId(user));
-            } else {
-                return cardMapper.cardListToCardDTOList(cardRepository
-                        .findAllByUserId(user, PageRequest.of(page, 10, Sort.by("id"))).getContent());
-            }
-        } else {
-            throw new UserNotFoundException("Пользователь с id = " + userId + " не найден!");
+            return cardMapper.cardListToCardDTOList(cardRepository
+                    .findAllByUserId(user, PageRequest.of(--page, 10, Sort.by("id"))).getContent());
         }
     }
 
 
 
     public CardDTO findOne(int id) {
-        if (cardRepository.findById(id).isPresent()) {
-            return cardMapper.cardToCardDTO(cardRepository.findById(id).get());
-        } else {
-            throw new CardNotFoundException("Карта с id = " + id + " не найдена!");
+        if (cardRepository.findById(id).isEmpty()) {
+            throw new CardNotFoundException(String.valueOf(id));
         }
+
+        return cardMapper.cardToCardDTO(cardRepository.findById(id).get());
     }
 
 
@@ -142,11 +118,10 @@ public class CardService {
         }
         if (cardDTO.getStatus() != null) {
             String curStatus = cardDTO.getStatus();
-            if (curStatus.equals("Active") || curStatus.equals("Blocked") || curStatus.equals("Expired")) {
-                card.setStatus(cardDTO.getStatus());
+            if (curStatus.equals("ACTIVE") || curStatus.equals("BLOCKED") || curStatus.equals("EXPIRED")) {
+                card.setStatus(StatusCard.valueOf(cardDTO.getStatus()));
             } else {
-                throw new IncorrectStatusExpection(
-                        "Некорректный статус карты. Возможны следующие варианты: Active, Blocked, Expired!");
+                throw new IncorrectStatusCardException();
             }
         }
         if (cardDTO.getBalance() != null) {
