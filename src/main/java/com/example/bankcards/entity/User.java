@@ -19,19 +19,19 @@ public class User {
     private Integer id;
 
     @Column(name = "name")
-    @NotNull(message = "Параметр name не может быть пустым")
+    @NotNull
     private String name;
 
     @Column(name = "login")
-    @NotNull(message = "Параметр login не может быть пустым")
+    @NotNull
     private String login;
 
     @Column(name = "password")
-    @NotNull(message = "Параметр password не может быть пустым")
+    @NotNull
     private String password;
 
     @Column(name = "roles")
-    @NotNull(message = "Параметр roles не может быть пустым")
+    @NotNull
     private String roles;
 
     @OneToMany(mappedBy = "userId")

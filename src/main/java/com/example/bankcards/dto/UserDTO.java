@@ -10,17 +10,16 @@ import lombok.Data;
 public class UserDTO {
     private Integer id;
 
-    @NotNull(message = "Параметр name не может быть пустым")
-    @NotBlank(message = "Параметр name не может состоять только из пробелов")
+    @NotBlank
     private String name;
 
-    @NotNull(message = "Параметр login не может быть пустым")
-    @Email(message = "Некорректный формат email")
+    @NotNull
+    @Email
     private String login;
 
-    @NotNull(message = "Параметр password не может быть пустым")
+    @NotNull
     private String password;
 
-    @NotNull(message = "Параметр roles не может быть пустым")
+    @NotNull
     private String roles;
 }

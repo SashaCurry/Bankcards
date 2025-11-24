@@ -5,7 +5,6 @@ import com.example.bankcards.entity.Card;
 import com.example.bankcards.entity.StatusCard;
 import com.example.bankcards.entity.User;
 import com.example.bankcards.exception.CardNotFoundException;
-import com.example.bankcards.exception.IncorrectStatusCardException;
 import com.example.bankcards.exception.UserNotFoundException;
 import com.example.bankcards.mapper.CardMapper;
 import com.example.bankcards.repository.CardRepository;
@@ -16,8 +15,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
-import java.time.Year;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -32,16 +30,10 @@ public class CardService {
 
     @Transactional
     public void createCard(CardDTO cardDTO) {
-        String curStatus = cardDTO.getStatus();
-        if (!curStatus.equals("ACTIVE") && !curStatus.equals("BLOCKED") && !curStatus.equals("EXPIRED")) {
-            throw new IncorrectStatusCardException();
-        }
-
         Card card = cardMapper.cardDTOToCard(cardDTO);
 
         card.setNumber(cardNumberService.generateNextCardNumber());
-        card.setExpMonth((byte) LocalDate.now().getMonthValue());
-        card.setExpYear(Year.of(LocalDate.now().getYear() + 5));
+        card.setExpDate(LocalDateTime.now().plusYears(5));
 
         User user = userRepository.findById(cardDTO.getUserId())
                 .orElseThrow(() -> new UserNotFoundException(String.valueOf(cardDTO.getUserId())));
@@ -110,19 +102,11 @@ public class CardService {
             throw new CardNotFoundException("Карта с id = " + cardDTO.getId() + " не найдена!");
         }
 
-        if (cardDTO.getExpMonth() != null) {
-            card.setExpMonth(cardDTO.getExpMonth());
-        }
-        if (cardDTO.getExpYear() != null) {
-            card.setExpYear(cardDTO.getExpYear());
+        if (cardDTO.getExpDate() != null) {
+            card.setExpDate(cardDTO.getExpDate());
         }
         if (cardDTO.getStatus() != null) {
-            String curStatus = cardDTO.getStatus();
-            if (curStatus.equals("ACTIVE") || curStatus.equals("BLOCKED") || curStatus.equals("EXPIRED")) {
-                card.setStatus(StatusCard.valueOf(cardDTO.getStatus()));
-            } else {
-                throw new IncorrectStatusCardException();
-            }
+            card.setStatus(StatusCard.valueOf(cardDTO.getStatus()));
         }
         if (cardDTO.getBalance() != null) {
             card.setBalance(cardDTO.getBalance());
