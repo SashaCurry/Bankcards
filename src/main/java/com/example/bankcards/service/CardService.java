@@ -1,6 +1,6 @@
 package com.example.bankcards.service;
 
-import com.example.bankcards.dto.CardDTO;
+import com.example.bankcards.dto.CardDto;
 import com.example.bankcards.entity.Card;
 import com.example.bankcards.entity.StatusCard;
 import com.example.bankcards.entity.User;
@@ -29,8 +29,8 @@ public class CardService {
 
 
     @Transactional
-    public void createCard(CardDTO cardDTO) {
-        Card card = cardMapper.cardDTOToCard(cardDTO);
+    public void createCard(CardDto cardDTO) {
+        Card card = cardMapper.cardDtoToCard(cardDTO);
 
         card.setNumber(cardNumberService.generateNextCardNumber());
         card.setExpDate(LocalDateTime.now().plusYears(5));
@@ -53,43 +53,43 @@ public class CardService {
     }
 
 
-    public List<CardDTO> findAll(Integer page) {
+    public List<CardDto> findAll(Integer page) {
         if (page == null) {
-            return cardMapper.cardListToCardDTOList(cardRepository.findAll());
+            return cardMapper.cardListToCardDtoList(cardRepository.findAll());
         }
 
-        return cardMapper.cardListToCardDTOList(
+        return cardMapper.cardListToCardDtoList(
                 cardRepository.findAll(PageRequest.of(--page, 10, Sort.by("id"))).getContent());
     }
 
 
-    public List<CardDTO> findAllByUser(Integer idUser, Integer page) {
+    public List<CardDto> findAllByUser(Integer idUser, Integer page) {
         if (userRepository.findById(idUser).isEmpty()) {
             throw new UserNotFoundException(String.valueOf(idUser));
         }
 
         User user = userRepository.findById(idUser).get();
         if (page == null) {
-            return cardMapper.cardListToCardDTOList(cardRepository.findAllByUserId(user));
+            return cardMapper.cardListToCardDtoList(cardRepository.findAllByUserId(user));
         } else {
-            return cardMapper.cardListToCardDTOList(cardRepository
+            return cardMapper.cardListToCardDtoList(cardRepository
                     .findAllByUserId(user, PageRequest.of(--page, 10, Sort.by("id"))).getContent());
         }
     }
 
 
 
-    public CardDTO findOne(int id) {
+    public CardDto findOne(int id) {
         if (cardRepository.findById(id).isEmpty()) {
             throw new CardNotFoundException(String.valueOf(id));
         }
 
-        return cardMapper.cardToCardDTO(cardRepository.findById(id).get());
+        return cardMapper.cardToCardDto(cardRepository.findById(id).get());
     }
 
 
     @Transactional
-    public void updateCard(Integer id, CardDTO cardDTO) {
+    public void updateCard(Integer id, CardDto cardDTO) {
         cardDTO.setId(id);
         if (cardRepository.findById(id).isEmpty()) {
             throw new CardNotFoundException("Карта с id = " + id + " не существует!");

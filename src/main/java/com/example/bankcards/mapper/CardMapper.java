@@ -1,6 +1,6 @@
 package com.example.bankcards.mapper;
 
-import com.example.bankcards.dto.CardDTO;
+import com.example.bankcards.dto.CardDto;
 import com.example.bankcards.entity.Card;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -14,10 +14,10 @@ public interface CardMapper {
     @Mapping(target = "userId", ignore = true)
     @Mapping(target = "number", ignore = true)
     @Mapping(target = "expDate", ignore = true)
-    Card cardDTOToCard(CardDTO cardDTO);
+    Card cardDtoToCard(CardDto cardDTO);
 
     @Mapping(target = "userId", source = "userId.id")
-    CardDTO cardToCardDTO(Card card);
+    CardDto cardToCardDto(Card card);
 
-    List<CardDTO> cardListToCardDTOList(List<Card> cards);
+    List<CardDto> cardListToCardDtoList(List<Card> cards);
 }

@@ -4,10 +4,9 @@ import jakarta.validation.constraints.*;
 import lombok.Data;
 
 import java.time.LocalDateTime;
-import java.time.Year;
 
 @Data
-public class CardDTO {
+public class CardDto {
     private Integer id;
 
     private String number;

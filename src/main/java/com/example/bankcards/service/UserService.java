@@ -1,6 +1,6 @@
 package com.example.bankcards.service;
 
-import com.example.bankcards.dto.UserDTO;
+import com.example.bankcards.dto.UserDto;
 import com.example.bankcards.entity.User;
 import com.example.bankcards.exception.UserNotCreatedException;
 import com.example.bankcards.exception.UserNotFoundException;
@@ -32,19 +32,19 @@ public class UserService {
         }
     }
 
-    public List<UserDTO> findAll() {
-        return userMapper.userListToUserDTOList(userRepository.findAll());
+    public List<UserDto> findAll() {
+        return userMapper.userListToUserDtoList(userRepository.findAll());
     }
 
 
-    public List<UserDTO> findAllByName(String name) {
-        return userMapper.userListToUserDTOList(userRepository.findAllByNameIgnoreCase(name));
+    public List<UserDto> findAllByName(String name) {
+        return userMapper.userListToUserDtoList(userRepository.findAllByNameIgnoreCase(name));
     }
 
 
-    public UserDTO findOne(int id) {
+    public UserDto findOne(int id) {
         if (userRepository.findById(id).isPresent()) {
-            return userMapper.userToUserDTO(userRepository.findById(id).get());
+            return userMapper.userToUserDto(userRepository.findById(id).get());
         } else {
             throw new UserNotFoundException(String.valueOf(id));
         }
@@ -52,8 +52,8 @@ public class UserService {
 
 
     @Transactional
-    public void saveUser(UserDTO userDTO) {
-        User user = userMapper.userDTOToUser(userDTO);
+    public void saveUser(UserDto userDTO) {
+        User user = userMapper.userDtoToUser(userDTO);
 
         if (userIsExists(user.getLogin())) {
             throw new UserNotCreatedException(user.getLogin());
@@ -67,7 +67,7 @@ public class UserService {
 
 
     @Transactional
-    public void updateUser(UserDTO userDTO) {
+    public void updateUser(UserDto userDTO) {
         if (userRepository.findById(userDTO.getId()).isPresent()) {
             User newUser = userRepository.findById(userDTO.getId()).get();
 

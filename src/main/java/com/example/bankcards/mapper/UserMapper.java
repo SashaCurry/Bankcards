@@ -1,6 +1,6 @@
 package com.example.bankcards.mapper;
 
-import com.example.bankcards.dto.UserDTO;
+import com.example.bankcards.dto.UserDto;
 import com.example.bankcards.entity.User;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -14,9 +14,9 @@ public interface UserMapper {
     @Mapping(target = "cards", ignore = true)
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "updatedAt", ignore = true)
-    User userDTOToUser(UserDTO userDTO);
+    User userDtoToUser(UserDto userDTO);
 
-    UserDTO userToUserDTO(User user);
+    UserDto userToUserDto(User user);
 
-    List<UserDTO> userListToUserDTOList(List<User> users);
+    List<UserDto> userListToUserDtoList(List<User> users);
 }
