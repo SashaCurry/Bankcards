@@ -1,5 +1,6 @@
 package com.example.bankcards.service;
 
+import com.example.bankcards.entity.NumberCard;
 import com.example.bankcards.repository.CardRepository;
 import jakarta.annotation.PostConstruct;
 import jakarta.persistence.EntityManager;
@@ -30,14 +31,17 @@ public class CardNumberService {
         int maxAttempts = 10;
         int attempt = 0;
 
+        NumberCard numberCard = new NumberCard();
+
         while (attempt < maxAttempts) {
             Long sequenceValue = ((Number) entityManager
                     .createNativeQuery("SELECT nextval('card_number_seq')")
                     .getSingleResult()).longValue();
 
             String cardNumber = formatCardNumber(sequenceValue);
+            numberCard.setNumber(cardNumber);
 
-            if (!cardRepository.existsByNumber(cardNumber)) {
+            if (!cardRepository.existsByNumber(numberCard)) {
                 return cardNumber;
             }
 

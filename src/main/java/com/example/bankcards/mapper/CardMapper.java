@@ -2,6 +2,7 @@ package com.example.bankcards.mapper;
 
 import com.example.bankcards.dto.CardDto;
 import com.example.bankcards.entity.Card;
+import com.example.bankcards.entity.NumberCard;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.ReportingPolicy;

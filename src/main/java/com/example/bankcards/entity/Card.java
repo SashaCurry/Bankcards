@@ -3,26 +3,22 @@ package com.example.bankcards.entity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
 import java.time.LocalDateTime;
-import java.time.Year;
 
 @Entity
 @Table(name = "cards")
 @AllArgsConstructor
-@Getter
-@Setter
+@Data
 public class Card {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_card")
     private Integer id;
 
-    @Column(name = "number")
-    @NotBlank
-    private String number;
+    @Embedded
+    private NumberCard number;
 
     @Column(name = "exp_date")
     @FutureOrPresent
@@ -43,5 +39,16 @@ public class Card {
     private User userId;
 
     public Card() {
+    }
+
+    public String getNumber() {
+        return number == null ? null : number.getNumber();
+    }
+
+    public void setNumber(String newNumber) {
+        if (this.number == null) {
+            this.number = new NumberCard();
+        }
+        this.number.setNumber(newNumber);
     }
 }

@@ -1,40 +1,49 @@
 package com.example.bankcards.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
+import jakarta.persistence.Column;
+import jakarta.persistence.Embeddable;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@AllArgsConstructor
+import java.util.Objects;
+
+@Embeddable
 @NoArgsConstructor
-@Data
+@Getter
 public class NumberCard {
-    private int section1;
-    private int section2;
-    private int section3;
-    private int section4;
+    @Column(name = "number")
+    private String number;
 
 
     public NumberCard(String number) {
-        setNumberCard(number);
+        setNumber(number);
     }
 
 
-    public String getNumberCard() {
-        return section1 + " " + section2 + " " + section3 + " " + section4;
-    }
-
-
-    public void setNumberCard(String newNumber) {
-        String[] sections = newNumber.split(" ");
-        this.section1 = Integer.parseInt(sections[0]);
-        this.section2 = Integer.parseInt(sections[1]);
-        this.section3 = Integer.parseInt(sections[2]);
-        this.section4 = Integer.parseInt(sections[3]);
+    public void setNumber(String number) {
+//        String[] sections = number.split(" ");
+//        this.number = Integer.parseInt(sections[0]) + " "
+//                + Integer.parseInt(sections[1]) + " "
+//                + Integer.parseInt(sections[2]) + " "
+//                + Integer.parseInt(sections[3]);
+        this.number = number;
     }
 
 
     @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        NumberCard that = (NumberCard) o;
+        return Objects.equals(number, that.number);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(number);
+    }
+
+    @Override
     public String toString() {
-        return section1 + " " + section2 + " " + section3 + " " + section4;
+        return number;
     }
 }

@@ -1,6 +1,7 @@
 package com.example.bankcards.repository;
 
 import com.example.bankcards.entity.Card;
+import com.example.bankcards.entity.NumberCard;
 import com.example.bankcards.entity.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -18,5 +19,5 @@ public interface CardRepository extends JpaRepository<Card, Integer> {
 
     Page<Card> findAllByUserId(User user, Pageable pageable);
 
-    boolean existsByNumber(String cardNumber);
+    boolean existsByNumber(NumberCard numberCard);
 }
