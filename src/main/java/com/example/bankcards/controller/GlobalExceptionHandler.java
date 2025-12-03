@@ -3,6 +3,7 @@ package com.example.bankcards.controller;
 import com.example.bankcards.exception.*;
 import com.example.bankcards.exception.ErrorResponse;
 import jakarta.validation.ConstraintViolationException;
+import org.hibernate.HibernateException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -10,19 +11,28 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import java.sql.SQLException;
+
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(HttpMessageNotReadableException.class)
-    private ResponseEntity<ErrorResponse> handleException(HttpMessageNotReadableException e) {
-        ErrorResponse response = new ErrorResponse(e.getMessage(), System.currentTimeMillis());
+//    @ExceptionHandler(HttpMessageNotReadableException.class)
+//    private ResponseEntity<ErrorResponse> handleException(HttpMessageNotReadableException e) {
+//        ErrorResponse response = new ErrorResponse(e.getMessage(), System.currentTimeMillis());
+//
+//        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+//    }
+//
+//
+//    @ExceptionHandler(IllegalArgumentException.class)
+//    private ResponseEntity<ErrorResponse> handleException(IllegalArgumentException e) {
+//        ErrorResponse response = new ErrorResponse(e.getMessage(), System.currentTimeMillis());
+//
+//        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+//    }
 
-        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
-    }
-
-
-    @ExceptionHandler(IllegalArgumentException.class)
-    private ResponseEntity<ErrorResponse> handleException(IllegalArgumentException e) {
+    @ExceptionHandler(Exception.class)
+    private ResponseEntity<ErrorResponse> handleException(Exception e) {
         ErrorResponse response = new ErrorResponse(e.getMessage(), System.currentTimeMillis());
 
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);

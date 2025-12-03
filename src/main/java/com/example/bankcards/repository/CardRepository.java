@@ -15,9 +15,12 @@ import java.util.Optional;
 
 @Repository
 public interface CardRepository extends JpaRepository<Card, Integer> {
-    List<Card> findAllByUserId(User user);
+//    List<Card> findAllByUserId(User user);
+    List<Card> findAllByUserId(Integer userId);
 
-    Page<Card> findAllByUserId(User user, Pageable pageable);
+
+//    Page<Card> findAllByUserId(User user, Pageable pageable);
+    Page<Card> findAllByUserId(Integer userId, Pageable pageable);
 
     boolean existsByNumber(NumberCard numberCard);
 }

@@ -3,6 +3,7 @@ package com.example.bankcards.dto;
 import jakarta.validation.constraints.*;
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Data
@@ -22,5 +23,5 @@ public class CardDto {
 
     @NotNull
     @Digits(integer = 12, fraction = 2)
-    private Float balance;
+    private BigDecimal balance;
 }

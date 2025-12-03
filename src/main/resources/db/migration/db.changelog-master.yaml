@@ -11,3 +11,5 @@ databaseChangeLog:
       file: db/migration/changesets/5-create-sequence-for-card-number.sql
   - include:
       file: db/migration/changesets/6-change-expiration-date-in-cards.sql
+  - include:
+      file: db/migration/changesets/7-change-type-for-money.sql

@@ -4,6 +4,7 @@ import com.example.bankcards.dto.CardDto;
 import com.example.bankcards.entity.Card;
 import com.example.bankcards.entity.StatusCard;
 import com.example.bankcards.entity.User;
+import com.example.bankcards.exception.CardException;
 import com.example.bankcards.exception.CardNotFoundException;
 import com.example.bankcards.exception.UserNotFoundException;
 import com.example.bankcards.mapper.CardMapper;
@@ -29,17 +30,14 @@ public class CardService {
 
 
     @Transactional
-    public void createCard(CardDto cardDTO) {
+    public CardDto createCard(CardDto cardDTO) {
         Card card = cardMapper.cardDtoToCard(cardDTO);
 
         card.setNumber(cardNumberService.generateNextCardNumber());
         card.setExpDate(LocalDateTime.now().plusYears(5));
 
-        User user = userRepository.findById(cardDTO.getUserId())
-                .orElseThrow(() -> new UserNotFoundException(String.valueOf(cardDTO.getUserId())));
-        card.setUserId(user);
-
         cardRepository.save(card);
+        return cardMapper.cardToCardDto(card);
     }
 
 
@@ -68,50 +66,30 @@ public class CardService {
             throw new UserNotFoundException(String.valueOf(idUser));
         }
 
-        User user = userRepository.findById(idUser).get();
         if (page == null) {
-            return cardMapper.cardListToCardDtoList(cardRepository.findAllByUserId(user));
+            return cardMapper.cardListToCardDtoList(cardRepository.findAllByUserId(idUser));
         } else {
             return cardMapper.cardListToCardDtoList(cardRepository
-                    .findAllByUserId(user, PageRequest.of(--page, 10, Sort.by("id"))).getContent());
+                    .findAllByUserId(idUser, PageRequest.of(--page, 10, Sort.by("id"))).getContent());
         }
     }
 
 
 
     public CardDto findOne(int id) {
-        if (cardRepository.findById(id).isEmpty()) {
-            throw new CardNotFoundException(String.valueOf(id));
-        }
-
-        return cardMapper.cardToCardDto(cardRepository.findById(id).get());
+        Card card = cardRepository.findById(id).orElseThrow(() -> new CardNotFoundException(String.valueOf(id)));
+        return cardMapper.cardToCardDto(cardRepository.findById(id).orElseThrow(
+                () -> new CardNotFoundException(String.valueOf(id))));
     }
 
 
     @Transactional
-    public void updateCard(Integer id, CardDto cardDTO) {
-        cardDTO.setId(id);
-        if (cardRepository.findById(id).isEmpty()) {
-            throw new CardNotFoundException("Карта с id = " + id + " не существует!");
-        }
+    public CardDto updateCard(Integer id, CardDto cardDto) {
+        Card card = cardRepository.findById(id).orElseThrow(() -> new CardNotFoundException(String.valueOf(id)));
 
-        Card card;
-        if (cardRepository.findById(cardDTO.getId()).isPresent()) {
-            card = cardRepository.findById(cardDTO.getId()).get();
-        } else {
-            throw new CardNotFoundException("Карта с id = " + cardDTO.getId() + " не найдена!");
-        }
-
-        if (cardDTO.getExpDate() != null) {
-            card.setExpDate(cardDTO.getExpDate());
-        }
-        if (cardDTO.getStatus() != null) {
-            card.setStatus(StatusCard.valueOf(cardDTO.getStatus()));
-        }
-        if (cardDTO.getBalance() != null) {
-            card.setBalance(cardDTO.getBalance());
-        }
-
+        cardMapper.updateCardFromDto(cardDto, card);
         cardRepository.save(card);
+
+        return cardMapper.cardToCardDto(card);
     }
 }

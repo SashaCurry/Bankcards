@@ -34,9 +34,6 @@ public class User {
     @NotNull
     private String roles;
 
-    @OneToMany(mappedBy = "userId")
-    private List<Card> cards;
-
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
 

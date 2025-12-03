@@ -18,9 +18,8 @@ public class CardController {
 
 
     @PostMapping()
-    public ResponseEntity<HttpStatus> createCard(@RequestBody @Valid CardDto cardDTO) {
-        cardService.createCard(cardDTO);
-        return new ResponseEntity<>(HttpStatus.CREATED);
+    public ResponseEntity<CardDto> createCard(@RequestBody @Valid CardDto cardDTO) {
+        return new ResponseEntity<>(cardService.createCard(cardDTO), HttpStatus.CREATED);
     }
 
 
@@ -50,9 +49,8 @@ public class CardController {
     }
 
 
-    @PatchMapping("/{id}")
-    public ResponseEntity<HttpStatus> updateCard(@PathVariable("id") int id, @RequestBody CardDto cardDTO) {
-        cardService.updateCard(id, cardDTO);
-        return new ResponseEntity<>(HttpStatus.OK);
+    @PutMapping("/{id}")
+    public ResponseEntity<CardDto> updateCard(@PathVariable("id") Integer id, @RequestBody CardDto cardDTO) {
+        return new ResponseEntity<>(cardService.updateCard(id, cardDTO), HttpStatus.OK);
     }
 }

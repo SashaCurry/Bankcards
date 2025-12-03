@@ -52,7 +52,7 @@ public class UserService {
 
 
     @Transactional
-    public void saveUser(UserDto userDTO) {
+    public UserDto saveUser(UserDto userDTO) {
         User user = userMapper.userDtoToUser(userDTO);
 
         if (userIsExists(user.getLogin())) {
@@ -63,28 +63,20 @@ public class UserService {
         user.setCreatedAt(LocalDateTime.now());
         user.setUpdatedAt(LocalDateTime.now());
         userRepository.save(user);
+
+        return userMapper.userToUserDto(user);
     }
 
 
     @Transactional
-    public void updateUser(UserDto userDTO) {
-        if (userRepository.findById(userDTO.getId()).isPresent()) {
-            User newUser = userRepository.findById(userDTO.getId()).get();
+    public UserDto updateUser(Integer id, UserDto userDto) {
+        User user = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException(id.toString()));
 
-            if (!userDTO.getLogin().equals(newUser.getLogin()) && userIsExists(userDTO.getLogin())) {
-                throw new UserNotCreatedException(userDTO.getLogin());
-            }
+        userMapper.updateUserFromDto(userDto, user);
+        user.setUpdatedAt(LocalDateTime.now());
+        userRepository.save(user);
 
-            newUser.setName(userDTO.getName());
-            newUser.setLogin(userDTO.getLogin());
-            newUser.setPassword(passwordEncoder.encode(userDTO.getPassword()));
-            newUser.setRoles(userDTO.getRoles());
-            newUser.setUpdatedAt(LocalDateTime.now());
-
-            userRepository.save(newUser);
-        } else {
-            throw new UserNotFoundException(String.valueOf(userDTO.getId()));
-        }
+        return userMapper.userToUserDto(user);
     }
 
 

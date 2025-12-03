@@ -2,33 +2,21 @@ package com.example.bankcards.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.Objects;
 
 @Embeddable
 @NoArgsConstructor
-@Getter
+@Data
 public class NumberCard {
     @Column(name = "number")
     private String number;
 
-
     public NumberCard(String number) {
         setNumber(number);
     }
-
-
-    public void setNumber(String number) {
-//        String[] sections = number.split(" ");
-//        this.number = Integer.parseInt(sections[0]) + " "
-//                + Integer.parseInt(sections[1]) + " "
-//                + Integer.parseInt(sections[2]) + " "
-//                + Integer.parseInt(sections[3]);
-        this.number = number;
-    }
-
 
     @Override
     public boolean equals(Object o) {

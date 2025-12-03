@@ -4,7 +4,9 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import org.springframework.context.annotation.Lazy;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 @Entity
@@ -31,12 +33,11 @@ public class Card {
 
     @Column(name = "balance")
     @NotNull
-    private Float balance;
+    private BigDecimal balance;
 
     @NotNull
-    @ManyToOne
-    @JoinColumn(name = "user_id", referencedColumnName = "id_user")
-    private User userId;
+    @Column(name = "user_id")
+    private Integer userId;
 
     public Card() {
     }

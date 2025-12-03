@@ -41,16 +41,13 @@ public class UserController {
 
 
     @PostMapping()
-    public ResponseEntity<HttpStatus> registerUser(@RequestBody @Valid UserDto userDTO) {
-        userService.saveUser(userDTO);
-        return new ResponseEntity<>(HttpStatus.CREATED);
+    public ResponseEntity<UserDto> registerUser(@RequestBody @Valid UserDto userDTO) {
+        return new ResponseEntity<>(userService.saveUser(userDTO), HttpStatus.CREATED);
     }
 
 
-    @PatchMapping("/{id}")
-    public ResponseEntity<HttpStatus> updateUser(@PathVariable("id") int id, @RequestBody UserDto userDTO) {
-        userDTO.setId(id);
-        userService.updateUser(userDTO);
-        return new ResponseEntity<>(HttpStatus.OK);
+    @PutMapping("/{id}")
+    public ResponseEntity<UserDto> updateUser(@PathVariable("id") Integer id, @RequestBody UserDto userDTO) {
+        return new ResponseEntity<>(userService.updateUser(id, userDTO), HttpStatus.OK);
     }
 }
